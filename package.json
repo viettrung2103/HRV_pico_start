@@ -1,0 +1,10 @@
+{
+  "url": [
+    [
+      "test.py",
+      "http://localhost:8000/test.py"
+    ]
+  ],
+  "deps": [],
+  "version": "0.1"
+}
