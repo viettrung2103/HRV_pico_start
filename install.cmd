@@ -8,4 +8,3 @@ timeout /t 2 /nobreak
 python -m mpremote connect %comport% mip install --target / http://localhost:8000/
 @rem The following line terminates all processes with mpremote.webserver as the window title.
 taskkill /fi "WINDOWTITLE eq mpremote.webserver"
-
