@@ -53,6 +53,10 @@
       "http://localhost:8000/opt33.py"
     ],
     [
+      "util.py",
+      "http://localhost:8000/util.py"
+    ],
+    [
       "lib/filefifo.py",
       "http://localhost:8000/pico-lib/filefifo.py"
     ],
