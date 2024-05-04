@@ -1,26 +1,82 @@
 {
   "urls": [
-    ["encoder.py", "http://localhost:8000/encoder.py"],
-    ["kubios.py", "http://localhost:8000/kubios.py"],
-    ["main.py", "http://localhost:8000/main.py"],
-    ["mqtt.py", "http://localhost:8000/mqtt.py"],
-    ["opt_x0.py", "http://localhost:8000/opt_x0.py"],
-    ["opt_x1.py", "http://localhost:8000/opt_x1"],
-    ["opt_xx0.py", "http://localhost:8000/opt_xx0.py"],
-    ["opt00.py", "http://localhost:8000/opt00.py"],
-    ["opt10.py", "http://localhost:8000/opt10.py"],
-    ["opt22.py", "http://localhost:8000/opt22.py"],
-    ["opt23.py", "http://localhost:8000/opt23.py"],
-    ["opt32.py", "http://localhost:8000/opt32.py"],
-    ["opt33.py", "http://localhost:8000/opt33.py"],
-    ["lib/filefifo.py", "http://localhost:8000/pico-lib/filefifo.py"],	
-    ["lib/fifo.py", "http://localhost:8000/pico-lib/fifo.py"],
-    ["lib/piotimer.py", "http://localhost:8000/pico-lib/piotimer.py"],
-    ["lib/led.py", "http://localhost:8000/pico-lib/led.py"],
-    ["lib/ssd1306.mpy", "http://localhost:8000/pico-lib/ssd1306.mpy"],
-    ["lib/umqtt/simple.mpy", "http://localhost:8000/pico-lib/umqtt/simple.mpy"]
+    [
+      "encoder.py",
+      "http://localhost:8000/encoder.py"
+    ],
+    [
+      "kubios.py",
+      "http://localhost:8000/kubios.py"
+    ],
+    [
+      "main.py",
+      "http://localhost:8000/main.py"
+    ],
+    [
+      "mqtt.py",
+      "http://localhost:8000/mqtt.py"
+    ],
+    [
+      "opt_x0.py",
+      "http://localhost:8000/opt_x0.py"
+    ],
+    [
+      "opt_x1.py",
+      "http://localhost:8000/opt_x1.py"
+    ],
+    [
+      "opt_xx0.py",
+      "http://localhost:8000/opt_xx0.py"
+    ],
+    [
+      "opt00.py",
+      "http://localhost:8000/opt00.py"
+    ],
+    [
+      "opt10.py",
+      "http://localhost:8000/opt10.py"
+    ],
+    [
+      "opt22.py",
+      "http://localhost:8000/opt22.py"
+    ],
+    [
+      "opt23.py",
+      "http://localhost:8000/opt23.py"
+    ],
+    [
+      "opt32.py",
+      "http://localhost:8000/opt32.py"
+    ],
+    [
+      "opt33.py",
+      "http://localhost:8000/opt33.py"
+    ],
+    [
+      "lib/filefifo.py",
+      "http://localhost:8000/pico-lib/filefifo.py"
+    ],
+    [
+      "lib/fifo.py",
+      "http://localhost:8000/pico-lib/fifo.py"
+    ],
+    [
+      "lib/piotimer.py",
+      "http://localhost:8000/pico-lib/piotimer.py"
+    ],
+    [
+      "lib/led.py",
+      "http://localhost:8000/pico-lib/led.py"
+    ],
+    [
+      "lib/ssd1306.mpy",
+      "http://localhost:8000/pico-lib/ssd1306.mpy"
+    ],
+    [
+      "lib/umqtt/simple.mpy",
+      "http://localhost:8000/pico-lib/umqtt/simple.mpy"
+    ]
   ],
-  "deps": [
-  ],
+  "deps": [],
   "version": "0.1"
 }
