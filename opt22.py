@@ -40,6 +40,9 @@ Y_ROW_1 = 0
 Y_ROW_2 = COLUMN_SPACE + LETTER_HEIGHT
 Y_ROW_3 = Y_ROW_2 + COLUMN_SPACE + LETTER_HEIGHT
 Y_ROW_4 = Y_ROW_3 + COLUMN_SPACE + LETTER_HEIGHT
+Y_ROW_5 = Y_ROW_4 + COLUMN_SPACE + LETTER_HEIGHT
+Y_ROW_6 = Y_ROW_5 + COLUMN_SPACE + LETTER_HEIGHT
+Y_ROW_7 = Y_ROW_6 + COLUMN_SPACE + LETTER_HEIGHT
 
 #const for led
 LED1_PIN = Pin(22)
@@ -141,22 +144,28 @@ class Opt22:
         return self.current_flag
     
     
-    def receive_data(self,data):
-        if data != None:
-            self.data = data
+    # def receive_data(self,data):
+    #     if data != None:
+    #         self.data = data
             
     def create_data(self):
-        return self.data
+        file_name = "result_21.json"
+        data = util.read_file(file_name)        
+        return data
             
     # def create_response(self):
     #     return self.response
     
     def on(self):
+        # file_name = "result_21.json"
+        data_json = self.create_data()
+        data_str = ujson.dumps(data_json)
+        
         self.press = False
         self.stop_flag = False
         self.encoder.update_program(self)
         self.mqtt.default_setting()
-        self.mqtt.add_data(self.data)
+        self.mqtt.add_data(data_str)
         self.run()
 
     def is_connected():

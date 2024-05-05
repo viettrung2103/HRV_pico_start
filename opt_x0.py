@@ -82,7 +82,7 @@ Y_ROW_5 = Y_ROW_4 + COLUMN_SPACE + LETTER_HEIGHT
 
         
 
-class Optx0_Display:
+class Opt_x0_Display:
     def __init__(self, i2c, scl_pin, sda_pin, frequency, oled_w, oled_h):
         self.i2c = I2C(i2c, scl=scl_pin, sda=sda_pin, freq=frequency)
         self.display = SSD1306_I2C(oled_w, oled_h, self.i2c)
@@ -110,7 +110,7 @@ class Optx0_Display:
         self.display.text(text5,x5,Y_ROW_5)
         self.display.show()
 
-class Optx0:
+class Opt_x0:
     def __init__(self,name, display,encoder, selector = None):
         self.name = name
         self.display = display
@@ -134,41 +134,21 @@ class Optx0:
 
         
     def handle_press(self):
-        if self.name == "10":
-            p_fifo = self.encoder.p10_fifo
-        if self.name == "20":
-            p_fifo = self.encoder.p20_fifo
-        if self.name == "30":
-            p_fifo = self.encoder.p30_fifo
-            
+        # if self.name == "10":
+        #     p_fifo = self.encoder.p10_fifo
+        # if self.name == "20":
+        #     p_fifo = self.encoder.p20_fifo
+        # if self.name == "30":
+        #     p_fifo = self.encoder.p30_fifo
+        p_fifo = self.encoder.p_x0_fifo
         # p30_fifo = self.encoder.p30_fifo
         while p_fifo.has_data():
             value = p_fifo.get()
             print(f"program {self.name} press")
             if value == 1:
                 self.press = True
-            
-
 
     def off(self):
         self.stop_flag = True
         self.encoder.stop_flag = True
-
-
-# adc_pin_nr = 27
-# sample_size = 500 # want 250
-# test_sample_size = 500
-# sample_rate = 250
-# hz = 20
-# wait = round(1/hz,2)
-
-# samples = Isr_Fifo(sample_size,adc_pin_nr)
-        
-# encoder = Encoder(ROT_A_PIN,ROT_B_PIN,ROT_SW_PIN)
-        
-# opt30_display = Optx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt30 = Optx0("30",opt30_display,encoder)
-
-# while True:
-#     opt30.on()
 

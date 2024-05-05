@@ -4,6 +4,7 @@ import network
 import time
 import gc
 import util
+
 # import secret
 
 
@@ -27,9 +28,9 @@ ANALYSIS_URL = "https://analysis.kubioscloud.com/v2/analytics/analyze"
 
 class Kubios:
 
-    def __init__(self, wlan,apikey, client_id, client_secret, login_url, token_url, redirect_uri, analysis_url ):
+    def __init__(self,apikey, client_id, client_secret, login_url, token_url, redirect_uri, analysis_url ):
 
-        self.wlan = wlan
+        # self.wlan = wlan
         # self.result = None  
         self.apikey = apikey
         self.client_id = client_id
@@ -44,7 +45,7 @@ class Kubios:
         self.try_count = 1
         self.num_error = 0
         # self.ppi_list = [664, 844, 856, 764, 648, 804, 724, 812, 896, 796, 804, 736, 800, 788, 856, 832, 884]
-        self.ppi_list = []
+        self.ppi_list = None
         # self.ppi_list = [828, 836, 852, 760, 800, 796, 856, 824, 808, 776, 724, 816, 800, 812, 812, 812, 756, 820, 812, 800] 
         # self.error_message = ""
         
@@ -54,10 +55,13 @@ class Kubios:
         self.result = None
         # self.access_token = None
         # self.dataset = None
-        self.ppi_list = []
+        self.ppi_list = None
     
     def create_login_response(self):
         try:
+            gc.collect()
+            print("Free memory:", gc.mem_free(), "bytes")
+            
             print("create login response")
             login_response = requests.post(
                 # url = TOKEN_URL,
@@ -67,11 +71,11 @@ class Kubios:
                 headers = {'Content-Type':'application/x-www-form-urlencoded'},
                 # auth = (CLIENT_ID, CLIENT_SECRET))
                 auth = (self.client_id, self.client_secret))
-            print("login response",login_response)
+            # print("login response",login_response)
             json_login_response =login_response.json()
             access_token = json_login_response["access_token"]
             # self.login_response = json_login_response
-            gc.collect()
+            
             return access_token
         
         except Exception as e:
@@ -81,12 +85,12 @@ class Kubios:
     
 
     def add_ppi_list(self,ppi_list):
-        if self.ppi_list == []:
+        if self.ppi_list == None:
             self.ppi_list = ppi_list
             
     def create_data_set(self):
         if self.stop_flag == False:
-            if self.ppi_list != []:
+            if self.ppi_list != None:
                 print("create data set")
                 dataset = {
                     "type"      : "RRI",
@@ -99,6 +103,9 @@ class Kubios:
             
     def create_analysis_response(self, dataset, access_token):
         try:
+            gc.collect()
+            print("Free memory:", gc.mem_free(), "bytes")
+
             print("create analysis response")
             analysis_response = requests.post(
                 # url = "https://analysis.kubioscloud.com/v2/analytics/analyze",
@@ -115,7 +122,6 @@ class Kubios:
             print(json_analysis_response)
             self.stop_flag = True
             time.sleep(3) 
-            gc.collect()
             return json_analysis_response
         except Exception as e:
             print(f"Failed to login to Kubios Server: {e}")
@@ -130,7 +136,9 @@ class Kubios:
             # self.add_ppi_list(ppi_list)
             dataset = self.create_data_set()
             json_analysis_response = self.create_analysis_response(dataset, access_token)
-            
+            gc.collect()
+            print("Free memory:", gc.mem_free(), "bytes")
+
             return json_analysis_response
             
     def validate_response(self, json_analysis_reponse):
@@ -148,16 +156,16 @@ class Kubios:
             
     def saving_result(self, json_analysis_reponse):
         # if self.result == None:
-        file_name = "response_opt3.json"
+        file_name = "response_32.json"
         self.result = {
             "artefact_level"    : json_analysis_reponse['analysis']["artefact_level"],
             "create_timestamp"  : json_analysis_reponse['analysis']["create_timestamp"],
-            "mean_hr_bpm"       : json_analysis_reponse['analysis']["mean_hr_bpm"],
-            "mean_rr_ms"        : json_analysis_reponse['analysis']["mean_rr_ms"],
-            "rmssd_ms"          : json_analysis_reponse['analysis']["rmssd_ms"],
-            "sdnn_ms"           : json_analysis_reponse['analysis']["sdnn_ms"],
-            "sns_index"         : json_analysis_reponse['analysis']["sns_index"],
-            "pns_index"         : json_analysis_reponse['analysis']["pns_index"],
+            "mean_hr"       : json_analysis_reponse['analysis']["mean_hr_bpm"],
+            "mean_ppi"        : json_analysis_reponse['analysis']["mean_rr_ms"],
+            "rmssd"          : json_analysis_reponse['analysis']["rmssd_ms"],
+            "sdnn"           : json_analysis_reponse['analysis']["sdnn_ms"],
+            "sns"         : json_analysis_reponse['analysis']["sns_index"],
+            "pns"         : json_analysis_reponse['analysis']["pns_index"],
         }
         util.write_file(file_name,self.result)
         
@@ -167,9 +175,6 @@ class Kubios:
 
         print("Free memory:", gc.mem_free(), "bytes")
 
-        SSID = "KMD658_Group_4"
-        PASSWORD = "00000000"
-        BROKER_IP = "192.168.4.253"
 
         APIKEY = "pbZRUi49X48I56oL1Lq8y8NDjq6rPfzX3AQeNo3a"
         CLIENT_ID = "3pjgjdmamlj759te85icf0lucv"
@@ -178,7 +183,7 @@ class Kubios:
         TOKEN_URL = "https://kubioscloud.auth.eu-west-1.amazoncognito.com/oauth2/token" 
         REDIRECT_URI = "https://analysis.kubioscloud.com/v1/portal/login"
         
-        ppi_list = [664, 844, 856, 764, 648, 804, 724, 812, 896, 796, 804, 736, 800, 788, 856, 832, 884]
+        ppi_list = [524, 544, 496, 488, 504, 528, 516, 496, 496, 556, 536, 524, 520, 520, 520, 484, 516, 524, 512, 512, 552, 556, 532, 492, 488, 540, 528]
 
         response = requests.post(
         url = TOKEN_URL,
@@ -273,26 +278,20 @@ class Kubios:
         print("start kubios")
         # print(self.stop_flag)
         if self.stop_flag == False:
-            print(self.ppi_list)
-            if not self.wlan.is_connected():
-                self.wlan.connect_wlan()
-            else:
-                # response = self.create_response()
-                # response = self.test_run()
-                gc.collect()
-                json_analysis_reponse = self.analyse()
-                self.validate_response(json_analysis_reponse)
-                print("analysis" ,json_analysis_reponse)
-                if self.error_flag == False:
-                    print("save result")
-                    self.saving_result(response)
-                    print(self.result)
-                    self.stop_flag = True
+            print("Free memory:", gc.mem_free(), "bytes")
+            gc.collect()
+            json_analysis_reponse = self.analyse()
+            print(json_analysis_reponse)
+            if self.error_flag == False:
+                print("save result")
+                self.saving_result(json_analysis_reponse)
+                print(self.result)
+                self.stop_flag = True
 
     def on(self):
         self.error_flag = False
         self.stop_flag = False
-        pass
+        # pass
     
     def off(self):
         self.stop_flag = True

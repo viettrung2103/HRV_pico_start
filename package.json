@@ -5,6 +5,10 @@
       "http://localhost:8000/encoder.py"
     ],
     [
+      "history_list.py",
+      "http://localhost:8000/history_list.py"
+    ],
+    [
       "kubios.py",
       "http://localhost:8000/kubios.py"
     ],
@@ -25,36 +29,96 @@
       "http://localhost:8000/opt_x1.py"
     ],
     [
+      "opt_x3.py",
+      "http://localhost:8000/opt_x3.py"
+    ],
+    [
       "opt_xx0.py",
       "http://localhost:8000/opt_xx0.py"
+    ],
+    [
+      "util.py",
+      "http://localhost:8000/util.py"
     ],
     [
       "opt00.py",
       "http://localhost:8000/opt00.py"
     ],
     [
-      "opt10.py",
-      "http://localhost:8000/opt10.py"
-    ],
-    [
       "opt22.py",
       "http://localhost:8000/opt22.py"
-    ],
-    [
-      "opt23.py",
-      "http://localhost:8000/opt23.py"
     ],
     [
       "opt32.py",
       "http://localhost:8000/opt32.py"
     ],
     [
-      "opt33.py",
-      "http://localhost:8000/opt33.py"
+      "lib/b_bye1.py",
+      "http://localhost:8000/graph/b_bye1.py"
     ],
     [
-      "util.py",
-      "http://localhost:8000/util.py"
+      "lib/b_bye2.py",
+      "http://localhost:8000/graph/b_bye2.py"
+    ],
+    [
+      "lib/b_bye3.py",
+      "http://localhost:8000/graph/b_bye3.py"
+    ],
+    [
+      "lib/b_bye4.py",
+      "http://localhost:8000/graph/b_bye4.py"
+    ],
+    [
+      "lib/g_encoder.py",
+      "http://localhost:8000/graph/g_encoder.py"
+    ],
+    [
+      "lib/g_truc_xx.py",
+      "http://localhost:8000/graph/g_truc_xx.py"
+    ],
+    [
+      "lib/g_truc_yy.py",
+      "http://localhost:8000/graph/g_truc_yy.py"
+    ],
+    [
+      "lib/m_ANL_B.py",
+      "http://localhost:8000/graph/m_ANL_B.py"
+    ],
+    [
+      "lib/m_ANL_W.py",
+      "http://localhost:8000/graph/m_ANL_W.py"
+    ],
+    [
+      "lib/m_CLOUD_B.py",
+      "http://localhost:8000/graph/m_CLOUD_B.py"
+    ],
+    [
+      "lib/m_CLOUD_W.py",
+      "http://localhost:8000/graph/m_CLOUD_W.py"
+    ],
+    [
+      "lib/m_HIS_B.py",
+      "http://localhost:8000/graph/m_HIS_B.py"
+    ],
+    [
+      "lib/m_HIS_W.py",
+      "http://localhost:8000/graph/m_HIS_W.py"
+    ],
+    [
+      "lib/m_MEAS_B.py",
+      "http://localhost:8000/graph/m_MEAS_B.py"
+    ],
+    [
+      "lib/m_MEA_W.py",
+      "http://localhost:8000/graph/m_MEA_W.py"
+    ],
+    [
+      "lib/mmm_heart_B.py",
+      "http://localhost:8000/graph/mmm_heart_B.py"
+    ],
+    [
+      "lib/mm_heart_W.py",
+      "http://localhost:8000/graph/mm_heart_W.py"
     ],
     [
       "lib/filefifo.py",
