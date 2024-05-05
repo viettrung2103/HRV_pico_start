@@ -110,7 +110,7 @@
     ],
     [
       "lib/m_MEA_W.py",
-      "http://localhost:8000/graph/m_MEA_W.py"
+      "http://localhost:8000/graph/m_MEAS_W.py"
     ],
     [
       "lib/mmm_heart_B.py",
