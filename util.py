@@ -1,4 +1,5 @@
 import ujson
+# from history_list import History_List
 
 t = 4 #4ms
 frequency = 250
@@ -106,12 +107,20 @@ def convert_timestamp_str(timestamp):
 def write_file(file_name, response):
     with open(file_name, "w") as f:
         ujson.dump(response,f)
-        print("done")
+        print("read to file ",file_name)
         
 def read_file(file_name):
-    with open(file_name) as f:
-        payload = ujson.load(f)
+    payload = None
+    try:
+        with open(file_name) as f:
+            payload = ujson.load(f)
+            print("read from file ",file_name)
+            return payload
+    except Exception as e:
+        print("There no file")
+    finally:
         return payload
+    
     
 def convert_to_int(num):
     new_num = int(round(num,0))
@@ -123,6 +132,126 @@ def get_x_starting(text):
     x_middle = int(round(OLED_WIDTH / 2, 0)) #0 - 127
     x_starting = x_middle - middle_str
     return x_starting
+
+
+
+# class History_List:
+#     def __init__(self,size = 6):
+#         self.size = size
+#         # self.cur = 0
+#         self.default_value = {"num":"0","name":"Back"}
+#         self.list = []
+#         self.data = None
+#         self.highest_num = 0
+#         self.new_history = None
+#         self.file_name = "history.json"
+#         self.key_name = "history_list"
+
+# #         self.current_
+#     def add(self,response):
+#         # print("start ",self.list)
+#         # print("add ",response)
+#         new_history = self.create_new_history(response)
+#         print(new_history['name'])
+#         #real list len = n -1
+#         n = len(self.list) #max = 7
+
+#         #real_n = n -1 = 6
+#         if n <= 5:
+#             # self.current_list = self.list[:n-1]
+#             for i in range(n-1,-1,-1):
+#                 # print("index {}".format(i))
+#                 self.list[i] = self.list[i-1] 
+#                 if i == 0:
+#                     self.list[i] = new_history
+#                 # print("current ",self.list)   
+#             self.list.append(self.default_value)
+#         else:
+#             for i in range(n-2,-1,-1):
+#                 self.list[i] = self.list[i-1]
+#                 if i == 0:
+#                     self.list[i] = new_history
+#         # print("final", self.list)
+#         self.save_list()
+    
+#     def is_exist(self):
+#         return self.exist_flag
+        
+#     def create_list(self):
+#         # back_object = {
+#         #     "name":str(self.highest_num),
+#         #     "value": self.default_value 
+#         #     }
+#         # self.default_value = back_object
+#         self.list.append(self.default_value)
+        
+#     def load_list_from_json(self):
+#         data = read_file(self.file_name)
+#         if not data:
+#             self.create_list() 
+#             # print("New list ",self.list)
+#         else:
+#             self.list = data[self.key_name]
+#             # print("list exist ",self.list)
+    
+#     def save_list(self):
+#         list_dict = {self.key_name:self.list}
+#         write_file(self.file_name,list_dict)
+        
+#     def update_highest_number(self):
+#         if self.list:
+#             for i in range(len(self.list) - 1):
+#                 history_object = self.list[i]
+#                 history_object_numb = int(history_object["num"])
+#                 self.highest_num = max(self.highest_num,history_object_numb)
+#         # print("highest number",self.highest_num)
+            
+#     def create_new_history(self,response):
+#         self.update_highest_number()
+#         text = "MEASUREMENT {}".format(self.highest_num +1)
+#         new_history = {
+#             "num": str(self.highest_num + 1),
+#             "name": text,
+#             "value": response
+#         }
+#         # print("new history ",new_history)
+#         return new_history
+        
+#     def show_list(self):
+#         return self.list
+            
+        
+                
+# response = {"create_timestamp": "2024-05-04T21:15:51.910675+00:00", "rmssd": 31.36466, "sdnn": 20.96066, "sns": 3.407736, "mean_ppi": 715.1667, "pns": -0.9618915, "artefact_level": "GOOD", "mean_hr": 83.89652}
+
+            
+                
+
+# for i in range(6,-1,-1):
+#     print(i)     
+# history_list = History_List()
+# history_list.add(2)
+# print(history_list.list) 
+# history_list.add(3)
+# print(history_list.list) 
+# history_list.add(4)
+# print(history_list.list) 
+# history_list.add(5)
+# print(history_list.list) 
+# history_list.add(6)
+# print(history_list.list) 
+# history_list.add(7)
+# print(history_list.list) 
+# history_list.add(8)
+# print(history_list.list) 
+# history_list.add(9)
+# print(history_list.list) 
+# history_list.add(10)
+# print(history_list.list) 
+        
+# a_list = [1,2,3,4,5,6]
+# n = len(a_list)
+# print(a_list[:n-1])
 # min_ppi_count = find_ppi_count_from_hr(MAX_HR)
 # max_ppi_count = find_ppi_count_from_hr(MIN_HR)
 

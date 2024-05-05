@@ -12,26 +12,22 @@ import time
 from encoder import Isr_Fifo, Encoder
 from mqtt import Mqtt, Wlan
 from kubios import Kubios
+from history_list import History_List
 
 
-# from opt210 import Opt210, Opt210_Display
+
 from opt22 import Opt22, Opt22_Display
-# from opt220 import Opt220, Opt220_Display
-from opt23 import Opt23, Opt23_Display
 
-
-
-# from opt310 import Opt310, Opt310_Display
 from opt32 import Opt32, Opt32_Display
-# from opt320 import Opt320, Opt320_Display
-from opt33 import Opt33, Opt33_Display
-
-from opt_x1 import Optx1, Optx1_Display, Optx1_Mean_Program
-from opt_x0 import Optx0, Optx0_Display
-from opt_xx0 import Optxx0, Optxx0_Display
 
 
-from opt00 import Program, Opt00_Display, Opt00_Selector,Opt00_str, Opt00
+from opt_x0 import Opt_x0, Opt_x0_Display
+from opt_x1 import Opt_x1, Opt_x1_Display, Opt_x1_Mean_Program
+from opt_x3 import Opt_x3, Opt_x3_Display
+from opt_xx0 import Opt_xx0, Opt_xx0_Display
+
+
+from opt00 import Program, Opt00_Display, Opt00_Selector,Opt00_Str, Opt00
 
 import micropython
 micropython.alloc_emergency_exception_buf(200)
@@ -473,9 +469,9 @@ class Main:
 
             else:
                 print("to state 32")
-                ppi_list = self.opt31.send_ppi_list()
-#                 print("ppi list ",ppi_list)
-                self.opt32.add_ppi_list(ppi_list)
+#                 ppi_list = self.opt31.send_ppi_list()
+# #                 print("ppi list ",ppi_list)
+#                 self.opt32.add_ppi_list(ppi_list)
                 self.state = self.state_32
         else:
             self.state = self.state_31
@@ -566,9 +562,9 @@ class Main:
                 self.reset_to_state_00()
             else:
                 print("to state 32")
-                ppi_list = self.opt31.send_ppi_list()
-#                 print("ppi list ",ppi_list)
-                self.opt32.add_ppi_list(ppi_list)
+#                 ppi_list = self.opt31.send_ppi_list()
+# #                 print("ppi list ",ppi_list)
+#                 self.opt32.add_ppi_list(ppi_list)
                 self.state = self.state_32
         else:
             self.state = self.state_320
@@ -627,44 +623,33 @@ samples = Isr_Fifo(sample_size,adc_pin_nr)
 timer = Piotimer(mode = Piotimer.PERIODIC, freq = sample_rate, callback = samples.handler)
 encoder = Encoder(ROT_A_PIN,ROT_B_PIN,ROT_SW_PIN)
 
+wlan = Wlan()
+mqtt = Mqtt("project", wlan)
+history_list = History_List()
+
+# kubios = Kubios(APIKEY,CLIENT_ID,CLIENT_SECRET,LOGIN_URL,TOKEN_URL,REDIRECT_URI,ANALYSIS_URL)
+kubios = Kubios(APIKEY, CLIENT_ID, CLIENT_SECRET, LOGIN_URL, TOKEN_URL, REDIRECT_URI, ANALYSIS_URL)
+
 opt00_display = Opt00_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
 opt00_selector = Opt00_Selector(ROW_START,HEIGHT_START)
 opt00 = Opt00("00",opt00_display, encoder,samples, opt00_selector)
 
-# opt10_display = Opt10_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt10 = Opt10("10",opt10_display,encoder)
+opt10_display = Opt_x0_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt10 = Opt_x0("10",opt10_display,encoder)
 
-opt10_display = Optx0_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt10 = Optx0("10",opt10_display,encoder)
+opt11_display = Opt_x1_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt11_mean_program = Opt_x1_Mean_Program(step)
+opt11 = Opt_x1("11", opt11_display,opt11_mean_program, test_sample_size, sample_size,frequency, encoder,samples)
 
+opt20_display = Opt_x0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt20 = Opt_x0("20",opt10_display,encoder)
 
-opt11_display = Optx1_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt11_mean_program = Optx1_Mean_Program(step)
-opt11 = Optx1("11", opt11_display,opt11_mean_program, test_sample_size, sample_size,frequency, encoder,samples)
+opt21_display = Opt_x1_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt21_mean_program = Opt_x1_Mean_Program(step)
+opt21 = Opt_x1("21", opt21_display,opt21_mean_program, test_sample_size, sample_size,frequency, encoder,samples)
 
-# opt20_display = Opt20_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt20 = Opt20("20",opt10_display,encoder)
-
-opt20_display = Optx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt20 = Optx0("20",opt10_display,encoder)
-
-
-opt21_display = Optx1_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt21_mean_program = Optx1_Mean_Program(step)
-opt21 = Optx1("21", opt21_display,opt21_mean_program, test_sample_size, sample_size,frequency, encoder,samples)
-
-
-# opt210_display = Opt210_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt210 = Opt210("210",opt210_display,encoder)
-
-opt210_display = Optxx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt210 = Optxx0("210",opt210_display,encoder)
-
-wlan = Wlan()
-mqtt = Mqtt("project", wlan)
-
-# kubios = Kubios(APIKEY,CLIENT_ID,CLIENT_SECRET,LOGIN_URL,TOKEN_URL,REDIRECT_URI,ANALYSIS_URL)
-kubios = Kubios(wlan, APIKEY, CLIENT_ID, CLIENT_SECRET, LOGIN_URL, TOKEN_URL, REDIRECT_URI, ANALYSIS_URL)
+opt210_display = Opt_xx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt210 = Opt_xx0("210",opt210_display,encoder)
 
 opt22_display = Opt22_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
 opt22 = Opt22("22",opt22_display,encoder, mqtt)
@@ -672,48 +657,40 @@ opt22 = Opt22("22",opt22_display,encoder, mqtt)
 # opt220_display = Opt220_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
 # opt220 = Opt220("220",opt220_display,encoder)
 
-opt220_display = Optxx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt220 = Optxx0("220",opt220_display,encoder)
+opt220_display = Opt_xx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt220 = Opt_xx0("220",opt220_display,encoder)
 
 
-opt23_display = Opt23_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt23 = Opt23("23",opt23_display,encoder)
+# opt23_display = Opt_x3_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
+# opt23 = Opt_x3("23",opt23_display,encoder)
+
+opt23_display = Opt_x3_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt23 = Opt_x3("23",opt23_display,encoder)
 
 # opt30_display = Opt30_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
 # opt30 = Opt30("30",opt30_display,encoder)
 
-opt30_display = Optx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt30 = Optx0("30",opt30_display,encoder)
+opt30_display = Opt_x0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt30 = Opt_x0("30",opt30_display,encoder)
 
 
 
-opt31_display = Optx1_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt31_mean_program = Optx1_Mean_Program(step)
-opt31 = Optx1("31", opt31_display,opt31_mean_program, test_sample_size, sample_size,frequency, encoder,samples)
+opt31_display = Opt_x1_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt31_mean_program = Opt_x1_Mean_Program(step)
+opt31 = Opt_x1("31", opt31_display,opt31_mean_program, test_sample_size, sample_size,frequency, encoder,samples)
 
-# opt310_display = Opt310_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt310 = Opt310("310",opt310_display,encoder)
-
-opt310_display = Optxx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt310 = Optxx0("310",opt310_display,encoder)
-
-
+opt310_display = Opt_xx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt310 = Opt_xx0("310",opt310_display,encoder)
 
 opt32_display = Opt32_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt32 = Opt32("32",opt32_display,encoder,kubios)
+opt32 = Opt32("32",opt32_display,encoder,kubios, wlan)
 
-# opt320_display = Opt320_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt320 = Opt320("320",opt320_display,encoder)
+opt320_display = Opt_xx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt320 = Opt_xx0("320",opt320_display,encoder)
 
-opt320_display = Optxx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt320 = Optxx0("320",opt320_display,encoder)
+opt33_display = Opt_x3_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt33 = Opt_x3("33",opt33_display,encoder, history_list)
 
-
-opt33_display = Opt33_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt33 = Opt33("33",opt33_display,encoder)
-
-# opt10_display = Opt10_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt10 = Opt10("10",encoder, opt10_display)
 
 # menu_prog.add_program(hr_program)
 opt00.add_program(opt10)
@@ -722,17 +699,17 @@ opt00.add_program(opt30)
 opt00.add_program(program_4)
 
 # program_str_1 = Program_str(text1,x_starting,y_starting1, hr_program)
-opt00_str_1 = Opt00_str(text1,x_starting,y_starting1, opt10)
-opt00_str_2 = Opt00_str(text2,x_starting,y_starting2, opt20)
-opt00_str_3 = Opt00_str(text3,x_starting,y_starting3, opt30)
-opt00_str_4 = Opt00_str(text4,x_starting,y_starting4, program_4)
+Opt00_Str_1 = Opt00_Str(text1,x_starting,y_starting1, opt10)
+Opt00_Str_2 = Opt00_Str(text2,x_starting,y_starting2, opt20)
+Opt00_Str_3 = Opt00_Str(text3,x_starting,y_starting3, opt30)
+Opt00_Str_4 = Opt00_Str(text4,x_starting,y_starting4, program_4)
 
 # led_str3 = Led_str(text1_3,x_starting,y_starting3, led3)
 
-opt00_display.add_text(opt00_str_1)
-opt00_display.add_text(opt00_str_2)
-opt00_display.add_text(opt00_str_3)
-opt00_display.add_text(opt00_str_4)
+opt00_display.add_text(Opt00_Str_1)
+opt00_display.add_text(Opt00_Str_2)
+opt00_display.add_text(Opt00_Str_3)
+opt00_display.add_text(Opt00_Str_4)
 
 
 

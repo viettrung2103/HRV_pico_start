@@ -21,16 +21,16 @@ class Isr_Fifo(Fifo):
     def update_program(self,program):
             self.cur_program = program    
     
-    def handler_11_21_31(self):
+    def handler_11_or_21(self):
         if self.stop_flag == False :
             self.put(self.av.read_u16())
             self.dbg.toggle()  
-
+  
     def handler(self,tid):
         if self.cur_program != None:
             name = self.cur_program.name
-            if name == "11" or name == "21" or name == "31" :           
-                self.handler_11_21_31()
+            if name == "11" or name == "21" :           
+                self.handler_11_or_21()
         
 
 class Encoder:
@@ -43,33 +43,25 @@ class Encoder:
         self.cur_selector = None
         self.cur_program  = None
         # self.press = False
-        self.p00_fifo = Fifo(15)
-        self.t00_fifo = Fifo(15, typecode = "i") #signed = "i"
+        self.p00_fifo = Fifo(30)
+        self.t00_fifo = Fifo(30, typecode = "i") #signed = "i"
         
-        self.p_l0_fifo = Fifo(15)
-        self.t_l0_fifo = Fifo(15, typecode = "i")
+        self.p10_fifo = Fifo(30) #default is unsigned "H"
+        self.p11_fifo = Fifo(30)
         
-        self.p_x1_fifo = Fifo(15)
-        self.p_x0_fifo = Fifo(15)
-        self.p_x3_fifo = Fifo(15)
-        # self.p_x10_fifo = Fifo(15)
-        self.p_xx0_fifo = Fifo(15)
-        
-
-        self.p22_fifo = Fifo(15)
-
-        self.p32_fifo = Fifo(15)
-        # self.p320_fifo = Fifo(15)
-        # self.p33_fifo = Fifo(15)
-        
-        self.p40_fifo = Fifo(15)
-        self.t40_fifo = Fifo(15)
-        self.p41_fifo = Fifo(15)
+        self.p20_fifo = Fifo(30)
+        self.p21_fifo = Fifo(30)
+        self.p210_fifo = Fifo(30)
+        self.p22_fifo = Fifo(30)
+        self.p220_fifo = Fifo(30)
+        self.p23_fifo = Fifo(30)
         
         self.sw.irq(handler = self.press_handler, trigger = Pin.IRQ_RISING, hard = True)
         self.a.irq (handler = self.turn_handler, trigger = Pin.IRQ_RISING, hard = True)
 
     
+    # def update_selector(self,selector):
+    #     self.cur_selector = selector
         
     def update_program(self, program):
         self.cur_program = program
@@ -77,34 +69,42 @@ class Encoder:
         
     def get_press_fifo_number(self):
         name = self.cur_program.name
-        if name == "00" or name =="40":
-            print("press name" ,name)
-            return self.p_l0_fifo
-        elif name == "10" or name == "20" or name == "30":
-                return self.p_x0_fifo    
-        elif name == "11" or name == "21" or name == "31":            
-                return self.p_x1_fifo
-        elif name == "210" or name == "310" or name == "220" or name == "320" or name == "4i":            
-                return self.p_xx0_fifo
-        elif name =="23" or name == "33":
-                return self.p_x3_fifo
+        if name == "00":
+            return self.p00_fifo
+        elif name == "10":
+            return self.p10_fifo
+        elif name == "11":
+            return self.p11_fifo
+        elif name == "20":
+            return self.p20_fifo
+        elif name == "21":
+            return self.p21_fifo
+        elif name == "210":
+            return self.p210_fifo
         elif name == "22":
             return self.p22_fifo
-        elif name == "32":
-            return self.p32_fifo
-
+        elif name == "220":
+            return self.p220_fifo
+        elif name == "23":
+            return self.p23_fifo
+                
     
         
     def get_turn_fifo_number(self):
         name = self.cur_program.name
-
-        if name == "00" or name =="40":
-            print("turn name" ,name)
-
-            return self.t_l0_fifo
-
+        if name == "00":
+            return self.t00_fifo   
+#         elif name == 10:
+#             return self.t10_fifo
             
-
+    # def press_handler(self,pin):
+    #     if self.cur_program != None:
+    #         p_fifo = self.get_press_fifo_number()
+    #         cur_time = time.ticks_ms()
+    #         delta = time.ticks_diff(cur_time, self.prev_time)
+    #         if delta >= BOUNCE_TIME:
+    #             p_fifo.put(1)
+    #             self.prev_time = cur_time
                 
     def press_handler(self,pin):
         if self.cur_program != None:
@@ -113,12 +113,13 @@ class Encoder:
             cur_time = time.ticks_ms()
             delta = time.ticks_diff(cur_time, self.prev_time)
             if delta >= BOUNCE_TIME:
-                if name == "00" or name == "40":
+                if name == "00":
     #                     print("index ",self.cur_selector.current_pos)
                     p_fifo.put(self.cur_selector.current_pos)
-                # elif name == "40":
-                #     pass
+                elif name == "40":
+                    pass
                 else:
+
                     p_fifo.put(1)
                 self.prev_time = cur_time
                 

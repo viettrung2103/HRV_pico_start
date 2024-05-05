@@ -42,7 +42,7 @@ TWO = 2
 test_duration = TWO  * SECOND * THOUSAND # to ms
 duration = TWO * SECOND * THOUSAND
 
-class Optxx0_Display:
+class Opt_xx0_Display:
     def __init__(self, i2c, scl_pin, sda_pin, frequency, oled_w, oled_h):
         self.i2c = I2C(i2c, scl=scl_pin, sda=sda_pin, freq=frequency)
         self.display = SSD1306_I2C(oled_w, oled_h, self.i2c)
@@ -70,13 +70,13 @@ class Optxx0_Display:
         self.display.text(text4,x4,Y_ROW_5)
         self.display.show()
 
-class Optxx0:
+class Opt_xx0:
     def __init__(self,name, display, encoder, selector = None):
         self.name = name
         self.display = display
         self.encoder = encoder
-        self.stop_flag = False
         self.selector = selector
+        self.stop_flag = False
         self.press = False
         
     def is_active(self):

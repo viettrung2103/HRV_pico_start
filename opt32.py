@@ -11,6 +11,8 @@ import ujson
 import network
 # from time import sleep
 from kubios import Kubios
+from mqtt import Wlan
+import gc
 
 # import network
 # # from time import sleep
@@ -254,6 +256,193 @@ ANALYSIS_URL = "https://analysis.kubioscloud.com/v2/analytics/analyze"
 #     def off(self):
 #         self.stop_flag = True
 
+# 
+# class Kubios:
+# 
+#     def __init__(self, wlan):
+# 
+#         self.wlan = wlan
+#         self.result = None
+#    
+#         self.ppi_list = []
+#         self.stop_flag = False
+#         self.error_flag = False
+#         self.try_count = 1
+#         self.num_error = 0
+#         # self.error_message = ""
+#         
+#     def default_setting(self):
+#         self.try_count = 1
+#         self.num_error = 0
+#         self.result = None
+#         # self.access_token = None
+#         # self.dataset = None
+#         self.ppi_list = []
+#     
+#     def create_login_response(self):
+#         try:
+#             print("create login response")
+#             login_response = requests.post(
+#                 url = TOKEN_URL,
+#                 data = 'grant_type=client_credentials&client_id={}'.format(CLIENT_ID),
+#                 headers = {'Content-Type':'application/x-www-form-urlencoded'},
+#                 auth = (CLIENT_ID, CLIENT_SECRET))
+#             json_login_response =login_response.json()
+#             access_token = json_login_response["access_token"]
+#             # self.login_response = json_login_response
+#             return access_token
+#         
+#         except Exception as e:
+#             print(f"Failed to login to Kubios Server: {e}")
+#             self.error_flag = True
+#             self.stop_flag = True
+#     
+# 
+#     def add_ppi_list(self,ppi_list):
+#         if self.ppi_list == []:
+#             self.ppi_list = ppi_list
+#             
+#     def create_data_set(self):
+#         if self.stop_flag == False:
+#             if self.ppi_list != []:
+#                 print("create data set")
+#                 dataset = {
+#                     "type"      : "RRI",
+#                     "data"      : self.ppi_list,
+#                     "analysis"  : {
+#                         "type":"readiness"
+#                     }
+#                 }
+#                 return dataset
+#             
+#     def create_analysis_response(self, dataset, access_token):
+#         try:
+#             print("create analysis response")
+#             analysis_response = requests.post(
+#                 # url = "https://analysis.kubioscloud.com/v2/analytics/analyze",
+#                 url = ANALYSIS_URL,
+#                 headers = { "Authorization": "Bearer {}".format(access_token), #use access token to access your Kubios Cloud analysis session
+#                 "X-Api-Key": APIKEY},
+#                 json = dataset) #dataset will be automatically converted to JSON by the urequests library
+# 
+#             json_analysis_response = analysis_response.json()
+#             # self.analysis_response = json_analysis_response
+#             # print(self.analysis_response)
+#             print(json_analysis_response)
+#             self.stop_flag = True
+#             time.sleep(3) 
+#             return json_analysis_response
+#         except Exception as e:
+#             print(f"Failed to login to Kubios Server: {e}")
+#             self.error_flag = True
+#             self.stop_flag = True
+#         # print(self.analysis_response)
+#         
+#     def analyse(self):
+#             print("analyse")
+#                 # return json_login_response, access_token
+#             access_token  = self.create_login_response()
+#             # self.add_ppi_list(ppi_list)
+#             dataset = self.create_data_set()
+#             json_analysis_response = self.create_analysis_response(dataset, access_token)
+#             
+#             return json_analysis_response
+#             
+#     def validate_response(self, json_analysis_reponse):
+#         if self.stop_flag == False:
+#             print("validate")
+#             if json_analysis_reponse != None:
+#                 if analysis_response["status"] == "ok":
+#                     self.error_flag = False
+#                 else:
+#                     self.error_flag = True
+#                     self.stop = True
+#             else:
+#                 self.error_flag = True
+#                 self.stop_flag = True
+#             
+#     def saving_result(self, json_analysis_reponse):
+#         if self.result == None:
+#             self.result = {
+#                 "artefact_level"    : json_analysis_reponse['analysis']["artefact_level"],
+#                 "create_timestamp"  : json_analysis_reponse['analysis']["create_timestamp"],
+#                 "mean_hr_bpm"       : json_analysis_reponse['analysis']["mean_hr_bpm"],
+#                 "mean_rr_ms"        : json_analysis_reponse['analysis']["mean_rr_ms"],
+#                 "rmssd_ms"          : json_analysis_reponse['analysis']["rmssd_ms"],
+#                 "sdnn_ms"           : json_analysis_reponse['analysis']["sdnn_ms"],
+#                 "sns_index"         : json_analysis_reponse['analysis']["sns_index"],
+#                 "pns_index"         : json_analysis_reponse['analysis']["pns_index"],
+#             }
+#         
+#     def create_response(self):
+#         while (self.try_count <200):
+#             time.sleep(0.05)
+#             try:
+#                 print("create login response")
+#                 login_response = requests.post(
+#                     url = TOKEN_URL,
+#                     data = 'grant_type=client_credentials&client_id={}'.format(CLIENT_ID),
+#                     headers = {'Content-Type':'application/x-www-form-urlencoded'},
+#                     auth = (CLIENT_ID, CLIENT_SECRET))
+#                 login_response = login_response.json() 
+#                 #Parse JSON login_response into a python dictionary 
+#                 access_token = login_response["access_token"] 
+#         #Parse access token #Interval data to be sent to Kubios Cloud. Replace with your own data: intervals = [828, 836, 852, 760, 800, 796, 856, 824, 808, 776, 724, 816, 800, 812, 812, 812, 756, 820, 812, 800] 
+#         # #Create the dataset dictionary HERE # Make the readiness analysis with the given data 
+#                 print("create dataset")
+#                 dataset = { 
+#                 "type": "RRI",
+#                 "data": self.ppi_list,
+#                 "analysis": {"type": "readiness"} 
+#                 }
+#                 print("create analysis response")
+#                 response = requests.post(
+#                 url = "https://analysis.kubioscloud.com/v2/analytics/analyze",
+#                 headers = { "Authorization": "Bearer {}".format(access_token), #use access token to access your Kubios Cloud analysis session 
+#                             "X-Api-Key": APIKEY},
+#                 json = dataset) #dataset will be automatically converted to JSON by the urequests library 
+#                 
+#                 response = response.json()
+#                 self.try_count = self.try_count +1
+#                 print("done")
+#                 return response
+#             
+#             except Exception as e:
+#                 print(f"Failed to login to Kubios Server: {e}")
+#                 self.num_error += 1
+#                 print("error ",self.num_error)
+#                 gc.collect()
+#                 if self.try_count <200:
+#                     continue
+#                 else:
+#                     self.error_flag = True
+#                     self.stop_flag = True
+#             
+#     def run(self):
+#         print("start kubios")
+#         # print(self.stop_flag)
+#         if self.stop_flag == False:
+#             if not self.wlan.is_connected():
+#                 self.wlan.connect_wlan()
+#             else:
+#                 response = self.create_response()
+#                 # json_analysis_reponse = self.analyse()
+#                 # self.validate_response(json_analysis_reponse)
+#                 # print("analysis" ,self.analysis_response)
+#                 if self.error_flag == False:
+#                     print("save result")
+#                     self.saving_result(response)
+#                     print(self.result)
+#                     self.stop_flag = True
+# 
+#     def on(self):
+#         self.error_flag = False
+#         self.stop_flag = False
+#         pass
+#     
+#     def off(self):
+#         self.stop_flag = True
+
 
 class Opt32_Display:
     def __init__(self, i2c, scl_pin, sda_pin, frequency, oled_w, oled_h):
@@ -279,79 +468,97 @@ class Opt32_Display:
 
 
 class Opt32:
-    def __init__(self,name, display,encoder,kubios, selector = None, data = None, ):
+    def __init__(self,name, display,encoder,kubios,wlan, selector = None, data = None, ):
         self.name = name
         self.display = display
         self.encoder = encoder
         self.selector = selector
         self.kubios = kubios
-        
-        self.ppi_list = []        
-        self.response = None
+        self.wlan = wlan
+        # self.response_file_name = "response_32.json"
+        self.ppi_list = None        
+#         self.response = None
         self.stop_flag = False
         self.error_flag = False
         # self.connect_flag = False
         self.press = False
+        self.history_name = "history.json"
         
-    def is_active(self):
-        return self.current_flag
     
-    
-    def add_ppi_list(self,ppi_list):
-        if ppi_list != []:
-            self.ppi_list = ppi_list
-            
-    def save_response(self,response):
-        json_response = ujson.dumps(response)
-        self.response = json_response
-        
-    def send_response(self):
-        return self.response
-            
-    # def create_response(self):
-    #     return self.response
+    def add_ppi_list(self):
+        if self.ppi_list == None:
+            file_name = "ppi_list_31.json"
+            data = util.read_file(file_name)
+            self.ppi_list = data['ppi_list']
+            print(self.ppi_list)    
 
+    # def save_to_history(self):
+    #     if self.stop_flag == True:
+            
+    #         # if name == "32" 
+            
     
     def on(self):
+        gc.collect()
+        print("Free memory:", gc.mem_free(), "bytes")
         self.press = False
         self.stop_flag = False
         self.encoder.update_program(self)
         self.kubios.on()
         self.kubios.default_setting()
+        # ppi_list = [664, 844, 856, 764, 648, 804, 724, 812, 896, 796, 804, 736, 800, 788, 856, 832, 884]
+        self.add_ppi_list()
         self.kubios.add_ppi_list(self.ppi_list)
-        self.run()
+        if not self.wlan.is_connected():
+            self.wlan.connect_wlan()
+        else:
+            self.run()
+            print("Free memory:", gc.mem_free(), "bytes")
+            gc.collect()
 
     def is_connected():
         return True
 
     def run(self):
-        if self.stop_flag == False and self.kubios.stop_flag == False:
-            self.display.show() 
+        self.display.show()
+        if self.stop_flag == False :
+            if self.kubios.stop_flag == False:
+                self.run_kubios()
             #remember to add ppi list before run
-            self.kubios.add_ppi_list(self.ppi_list)
-            self.kubios.run()
-            # self.mqtt.run()
-            self.handle_press()
-        
-        # if self.response != None:
-            # self.stop()
-        # if self.error_flag == True or self.mqtt.error_flag == True :
-            if self.kubios.error_flag == True :
-                print('error')
-                self.error_flag = True
-                self.stop()
-            if self.kubios.stop_flag == True:
-                self.stop_flag = True
-                self.save_response(self.kubios.result)
-                self.stop()
+            # self.kubios.add_ppi_list(self.ppi_list)
+            
+                # self.kubios.run()
+                # # self.mqtt.run()
+
+                # if self.kubios.error_flag == True :
+                #     print('error')
+                #     self.error_flag = True
+                #     self.stop_flag = True
+                #     # self.stop()
+                # if self.kubios.stop_flag == True:
+                #     self.stop_flag = True
+                    # self.save_response(self.kubios.result)
+                    # self.stop()
         self.stop()
         # else:
         #     self.stop()
+        
+    
+    def run_kubios(self):
+        self.kubios.run()
+        if self.kubios.error_flag == True :
+            print('error')
+            self.error_flag = True
+            self.stop_flag = True
+            # self.stop()
+        if self.kubios.stop_flag == True:
+            self.stop_flag = True
+    
     def stop(self):
         # if self.is_connected():
         if self.stop_flag == True:
             print("program stop automatically")
-            self.stop_flag = True
+            # self.stop_flag = True
             self.press = True
             
             
@@ -366,8 +573,6 @@ class Opt32:
                 if self.kubios.stop_flag == True:
                     self.stop_flag == True
                     self.press = True
-            
-
 
     def off(self):
         self.press = False
@@ -398,8 +603,8 @@ class Opt32:
 # samples = Isr_Fifo(sample_size,adc_pin_nr)
 #         
 # encoder = Encoder(ROT_A_PIN,ROT_B_PIN,ROT_SW_PIN)
-# 
-# kubios = Kubios()
+# wlan = Wlan()
+# kubios = Kubios(wlan)
 # 
 #         
 # opt32_display = Opt32_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
@@ -417,6 +622,8 @@ class Opt32:
 # while True:
 #     # kubios.run()
 #     opt32.on()
+#     gc.collect()
+# #     opt32.run()
 
 
 
