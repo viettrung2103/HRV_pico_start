@@ -77,19 +77,19 @@
       "http://localhost:8000/pico-lib/umqtt/simple.mpy"
     ],
     [
-      "lib/result_21.json",
+      "result_21.json",
       "http://localhost:8000/logs/result_21.json"
     ],
     [
-      "lib/response_32_dummy.json",
+      "response_32_dummy.json",
       "http://localhost:8000/logs/response_32_dummy.json"
     ],
     [
-      "lib/ppi_list_31.json",
+      "ppi_list_31.json",
       "http://localhost:8000/logs/ppi_list_31.json"
     ],
     [
-      "lib/history.json",
+      "history.json",
       "http://localhost:8000/logs/history.json"
     ]
   ],

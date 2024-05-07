@@ -545,7 +545,7 @@ sdnn     = {self.sdnn}
                         print("pressed")
                         self.error_flag = True
                         self.stop_flag = True
-                    else len(self.ppi_list) <15 and self.time > 30:
+                    elif len(self.ppi_list) < 15 and self.time > 30:
                         print("pressed")
                         self.error_flag = True
                         self.stop_flag = True   
@@ -553,9 +553,12 @@ sdnn     = {self.sdnn}
         
 
     def is_program_stop(self):
-
-        if self.time >= 30 and len(self.ppi_list) >= 15:    
-            return True
+        
+        if self.time >= 30 and len(self.ppi_list) >= 15:
+            if self.name != "11":
+                return True
+            else:
+                return False
         elif self.stop_flag == True:
             return True
         elif self.error_flag == True:
@@ -571,7 +574,7 @@ sdnn     = {self.sdnn}
 
     def hr_program(self):
         while self.is_main_program_run():
-            self.validate_long_time()
+#             self.validate_long_time()
             self.check_error()
             
             data = self.isr_fifo.get()
@@ -652,9 +655,9 @@ sdnn     = {self.sdnn}
         self.display.show_result()
         while self.stop_flag != True:
             if self.display.update_flag == False:
-                if self.hard_reset_flag == True:
-                    self.reset()
-                else:
+#                 if self.hard_reset_flag == True:
+#                     self.hard_reset() # need to check here
+#                 else:
                     self.hr_program()
             else:
                 self.display.show_result()
