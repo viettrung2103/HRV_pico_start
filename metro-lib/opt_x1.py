@@ -545,7 +545,7 @@ sdnn     = {self.sdnn}
                         print("pressed")
                         self.error_flag = True
                         self.stop_flag = True
-                    if len(self.ppi_list) <15 and self.time > 30:
+                    else len(self.ppi_list) <15 and self.time > 30:
                         print("pressed")
                         self.error_flag = True
                         self.stop_flag = True   
