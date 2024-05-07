@@ -1,0 +1,10 @@
+{
+   "create_timestamp":"2024-05-03T14:56:07.324940+00:00",
+   "rmssd_ms":87.31021,
+   "sns_index":0.3185438,
+   "sdnn_ms":64.06655,
+   "mean_rr_ms":794.5881,
+   "pns_index":0.8642313,
+   "artefact_level":"GOOD",
+   "mean_hr_bpm":75.51081
+}

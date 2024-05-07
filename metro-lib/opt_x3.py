@@ -152,6 +152,8 @@ class Opt_x3:
         try:
             if self.name == "33":
                 file_name = "response_32.json"
+            elif self.name == "33d":
+                file_name = "response_32_dummy.json"
             else:
                 file_name = "result_21.json"
             self.data = util.read_file(file_name)

@@ -56,12 +56,7 @@ Y_ROW_2 = COLUMN_SPACE + LETTER_HEIGHT
 Y_ROW_3 = Y_ROW_2 + COLUMN_SPACE + LETTER_HEIGHT
 Y_ROW_4 = Y_ROW_3 + COLUMN_SPACE + LETTER_HEIGHT
 
-#const for led
-LED1_PIN = Pin(22)
-LED2_PIN = Pin(21)
-LED3_PIN = Pin(20)
-ON = 1 # for led, 1 is on, 0 is off
-OFF = 0
+
 
 
 
@@ -101,11 +96,11 @@ ROT_B_PIN = Pin(11)
 ROT_SW_PIN = Pin(12)
 BOUNCE_TIME = 200
 
-Y_ROW_1 = 0
-Y_ROW_2 = COLUMN_SPACE + LETTER_HEIGHT
-Y_ROW_3 = Y_ROW_2 + COLUMN_SPACE + LETTER_HEIGHT
-Y_ROW_4 = Y_ROW_3 + COLUMN_SPACE + LETTER_HEIGHT
-Y_ROW_5 = Y_ROW_4 + COLUMN_SPACE + LETTER_HEIGHT
+# Y_ROW_1 = 0
+# Y_ROW_2 = COLUMN_SPACE + LETTER_HEIGHT
+# Y_ROW_3 = Y_ROW_2 + COLUMN_SPACE + LETTER_HEIGHT
+# Y_ROW_4 = Y_ROW_3 + COLUMN_SPACE + LETTER_HEIGHT
+# Y_ROW_5 = Y_ROW_4 + COLUMN_SPACE + LETTER_HEIGHT
 
 
 #MQTT
@@ -127,7 +122,7 @@ ANALYSIS_URL = "https://analysis.kubioscloud.com/v2/analytics/analyze"
 
 
 class Main:
-    def __init__(self,delay, opt00, opt10, opt11,opt20, opt21, opt210, opt22, opt220, opt23, opt30, opt31, opt310,opt32, opt320, opt33):
+    def __init__(self,delay, opt00, opt10, opt11,opt20, opt21, opt210, opt22, opt220, opt23, opt30, opt31, opt310,opt32, opt320, opt33, opt33d):
 #         self.control_flag = None
         self.delay = delay
         self.opt00 = opt00
@@ -145,6 +140,7 @@ class Main:
         self.opt32 = opt32
         self.opt320 = opt320
         self.opt33 = opt33
+        self.opt33d = opt33d
 #         self.encoder = encoder
         self.state = self.state_00
         self.error_count_opt2 = 0
@@ -180,6 +176,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt00.on()
         time.sleep(self.delay)
         if self.opt00.press:
@@ -198,7 +195,7 @@ class Main:
         
         
     def state_10(self):
-        print("Free memory:", gc.mem_free(), "bytes")
+#         print("Free memory:", gc.mem_free(), "bytes")
         self.opt00.off()
         self.opt11.off()
         self.opt20.off()
@@ -213,6 +210,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt10.on()
         time.sleep(self.delay)
         if self.opt10.press:
@@ -235,6 +233,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt11.on()
         time.sleep(self.delay)
         if self.opt11.press:
@@ -258,6 +257,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt20.on()
         time.sleep(self.delay)
         if self.opt20.press:
@@ -267,7 +267,7 @@ class Main:
             self.state = self.state_20
             
     def state_21(self):
-        print("Free memory:", gc.mem_free(), "bytes")
+#         print("Free memory:", gc.mem_free(), "bytes")
 
         self.opt00.off()
         self.opt10.off()
@@ -283,6 +283,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt21.on()
         time.sleep(self.delay)
         if self.opt21.press:
@@ -316,6 +317,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt210.on()
         time.sleep(self.delay)
         if self.opt210.press:
@@ -329,7 +331,7 @@ class Main:
             self.state = self.state_210
             
     def state_22(self):
-        print("Free memory:", gc.mem_free(), "bytes")
+#         print("Free memory:", gc.mem_free(), "bytes")
         self.opt00.off()
         self.opt10.off()
         self.opt11.off()
@@ -344,6 +346,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt22.on()
 
         time.sleep(self.delay)
@@ -375,6 +378,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt220.on()
 
         time.sleep(self.delay)
@@ -394,7 +398,7 @@ class Main:
             self.state = self.state_220
             
     def state_23(self):
-        print("Free memory:", gc.mem_free(), "bytes")
+#         print("Free memory:", gc.mem_free(), "bytes")
         self.opt00.off()
         self.opt10.off()
         self.opt11.off()
@@ -409,6 +413,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt23.on()
         time.sleep(self.delay)
         if self.opt23.press:
@@ -433,6 +438,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt30.on()
         time.sleep(self.delay)
         if self.opt30.press:
@@ -442,7 +448,7 @@ class Main:
             self.state = self.state_30
             
     def state_31(self):
-        print("Free memory:", gc.mem_free(), "bytes")
+#         print("Free memory:", gc.mem_free(), "bytes")
         self.opt00.off()
         self.opt10.off()
         self.opt11.off()
@@ -457,6 +463,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt31.on()
         
         time.sleep(self.delay)
@@ -491,6 +498,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt310.on()
         time.sleep(self.delay)
         if self.opt310.press:
@@ -518,6 +526,7 @@ class Main:
         self.opt31.off()
         self.opt310.off()
         self.opt320.off()
+        self.opt33d.off()
         self.opt33.off()
 
         self.opt32.on()
@@ -553,13 +562,14 @@ class Main:
         self.opt310.off()
         self.opt32.off()
         self.opt33.off()
+        self.opt33d.off()
         self.opt320.on()
 
         time.sleep(self.delay)
         if self.opt320.press:
             if self.error_count_opt3 >= 5:
 
-                self.reset_to_state_00()
+                self.state = self.state_33d
             else:
                 print("to state 32")
 #                 ppi_list = self.opt31.send_ppi_list()
@@ -584,6 +594,7 @@ class Main:
         self.opt310.off()
         self.opt32.off()
         self.opt320.off()
+        self.opt33d.off()
         self.opt33.on()
         
         time.sleep(self.delay)
@@ -592,7 +603,33 @@ class Main:
             self.state = self.state_00
         else:
             self.state = self.state_33
-    
+
+            
+    def state_33d(self):
+        self.opt00.off()
+        self.opt10.off()
+        self.opt11.off()
+        self.opt20.off()
+        self.opt21.off()
+        self.opt210.off()
+        self.opt22.off()
+        self.opt220.off()
+        self.opt23.off()
+        self.opt30.off()
+        self.opt31.off()
+        self.opt310.off()
+        self.opt32.off()
+        self.opt320.off()
+        self.opt33.off()
+        self.opt33d.on()
+        
+        time.sleep(self.delay)
+        if self.opt33d.press:
+            print("to state 00")
+            self.state = self.state_00
+        else:
+            self.state = self.state_33d
+
 text1 = '1.MEASURE HR'
 text2 = "2.HRV ANALYSIS"
 text3 = "3.KUBIOS"
@@ -616,7 +653,7 @@ wait = round(1/hz,2)
 program_1 = Program("MEASURE HR")
 program_2 = Program("Basic HRV Analysic")
 program_3 = Program("KUBIOS")
-program_4 = Program("HISTORY")
+# program_4 = Program("HISTORY")
 
 
 samples = Isr_Fifo(sample_size,adc_pin_nr)
@@ -691,41 +728,37 @@ opt320 = Opt_xx0("320",opt320_display,encoder)
 opt33_display = Opt_x3_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
 opt33 = Opt_x3("33",opt33_display,encoder, history_list)
 
+opt33_display = Opt_x3_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt33d = Opt_x3("33d",opt33_display,encoder, history_list)
+
 
 # menu_prog.add_program(hr_program)
 opt00.add_program(opt10)
 opt00.add_program(opt20)
 opt00.add_program(opt30)
-opt00.add_program(program_4)
+# opt00.add_program(program_4)
 
 # program_str_1 = Program_str(text1,x_starting,y_starting1, hr_program)
 Opt00_Str_1 = Opt00_Str(text1,x_starting,y_starting1, opt10)
 Opt00_Str_2 = Opt00_Str(text2,x_starting,y_starting2, opt20)
 Opt00_Str_3 = Opt00_Str(text3,x_starting,y_starting3, opt30)
-Opt00_Str_4 = Opt00_Str(text4,x_starting,y_starting4, program_4)
+# Opt00_Str_4 = Opt00_Str(text4,x_starting,y_starting4, program_4)
 
 # led_str3 = Led_str(text1_3,x_starting,y_starting3, led3)
 
 opt00_display.add_text(Opt00_Str_1)
 opt00_display.add_text(Opt00_Str_2)
 opt00_display.add_text(Opt00_Str_3)
-opt00_display.add_text(Opt00_Str_4)
+# opt00_display.add_text(Opt00_Str_4)
 
 
 
-# menu_display = Menu_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
-
-# opt10_encoder = Encoder(ROT_SW_PIN)
-
-
-
-main = Main(wait,opt00,opt10, opt11, opt20, opt21, opt210, opt22, opt220, opt23, opt30, opt31, opt310, opt32, opt320, opt33)
+main = Main(wait,opt00,opt10, opt11, opt20, opt21, opt210, opt22, opt220, opt23, opt30, opt31, opt310, opt32, opt320, opt33,opt33d)
 
 
 while True:
     main.execute()
     gc.collect()
-#     opt20.on()
 
 
 

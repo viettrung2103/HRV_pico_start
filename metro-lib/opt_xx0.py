@@ -101,10 +101,7 @@ class Opt_xx0:
         
     def handle_press(self):
 
-        # if self.name == "21":
-        #     p_fifo = self.encoder.p21_fifo
-        # if self.name == "31":
-        #     p_fifo = self.encoder.p31_fifo
+
         p_fifo = self.encoder.p_xx0_fifo
 #         print(p210_fifo)
         while p_fifo.has_data():

@@ -6,7 +6,7 @@ from piotimer import Piotimer
 import math
 import time
 
-BOUNCE_TIME = 200
+BOUNCE_TIME = 300
 
 
 class Isr_Fifo(Fifo):
@@ -16,13 +16,15 @@ class Isr_Fifo(Fifo):
         self.dbg = Pin(0,Pin.OUT)
         self.cur_program = None
         self.stop_flag = False
-        # self.display = display
         
     def update_program(self,program):
             self.cur_program = program    
+            
+        
     
     def handler_11_21_31(self):
-        if self.stop_flag == False :
+        if self.cur_program.stop_flag == False:
+
             self.put(self.av.read_u16())
             self.dbg.toggle()  
 
@@ -55,7 +57,7 @@ class Encoder:
         # self.p_x10_fifo = Fifo(15)
         self.p_xx0_fifo = Fifo(15)
         
-
+        self.p21_fifo = Fifo(15)
         self.p22_fifo = Fifo(15)
 
         self.p32_fifo = Fifo(15)
@@ -74,24 +76,28 @@ class Encoder:
     def update_program(self, program):
         self.cur_program = program
         self.cur_selector = program.selector
+#         print(f"program {self.cur_program.name} use encoder")
         
     def get_press_fifo_number(self):
         name = self.cur_program.name
         if name == "00" or name =="40":
-            print("press name" ,name)
+        
             return self.p_l0_fifo
         elif name == "10" or name == "20" or name == "30":
-                return self.p_x0_fifo    
-        elif name == "11" or name == "21" or name == "31":            
-                return self.p_x1_fifo
+            return self.p_x0_fifo    
+        elif name == "11" or name == "21" or name == "31":   
+            return self.p_x1_fifo
+#         elif name == "21":
+#             return self.p21_fifo
         elif name == "210" or name == "310" or name == "220" or name == "320" or name == "4i":            
-                return self.p_xx0_fifo
+            return self.p_xx0_fifo
         elif name =="23" or name == "33":
-                return self.p_x3_fifo
+            return self.p_x3_fifo
         elif name == "22":
             return self.p22_fifo
         elif name == "32":
             return self.p32_fifo
+        print("press name" ,name)    
 
     
         
@@ -108,24 +114,27 @@ class Encoder:
                 
     def press_handler(self,pin):
         if self.cur_program != None:
-            p_fifo = self.get_press_fifo_number()
-            name = self.cur_program.name
-            cur_time = time.ticks_ms()
-            delta = time.ticks_diff(cur_time, self.prev_time)
-            if delta >= BOUNCE_TIME:
-                if name == "00" or name == "40":
-    #                     print("index ",self.cur_selector.current_pos)
-                    p_fifo.put(self.cur_selector.current_pos)
-                # elif name == "40":
-                #     pass
-                else:
-                    p_fifo.put(1)
-                self.prev_time = cur_time
+            if self.cur_program.stop_flag == False:
+
+                p_fifo = self.get_press_fifo_number()
+                name = self.cur_program.name
+                cur_time = time.ticks_ms()
+                delta = time.ticks_diff(cur_time, self.prev_time)
+                if delta >= BOUNCE_TIME:
+                    if name == "00" or name == "40":
+        #                     print("index ",self.cur_selector.current_pos)
+                        p_fifo.put(self.cur_selector.current_pos)
+                    # elif name == "40":
+                    #     pass
+                    else:
+                        p_fifo.put(1)
+                    self.prev_time = cur_time
                 
     def turn_handler(self,pin):
         if self.cur_selector != None:
-            t_fifo = self.get_turn_fifo_number()
-            if self.b():
-                t_fifo.put(1)
-            else:
-                t_fifo.put(-1)  
+            if self.cur_program.stop_flag == False:
+                t_fifo = self.get_turn_fifo_number()
+                if self.b():
+                    t_fifo.put(1)
+                else:
+                    t_fifo.put(-1)  

@@ -44,12 +44,7 @@ Y_ROW_5 = Y_ROW_4 + COLUMN_SPACE + LETTER_HEIGHT
 Y_ROW_6 = Y_ROW_5 + COLUMN_SPACE + LETTER_HEIGHT
 Y_ROW_7 = Y_ROW_6 + COLUMN_SPACE + LETTER_HEIGHT
 
-#const for led
-LED1_PIN = Pin(22)
-LED2_PIN = Pin(21)
-LED3_PIN = Pin(20)
-ON = 1 # for led, 1 is on, 0 is off
-OFF = 0
+
 
 #hr
 t = 4 #4ms
@@ -72,8 +67,6 @@ age = 30
 MIN_HR = 50
 MAX_HR = 150
 
-# MIN_PULSE = 1
-# MAX_PULSE = 6
 
 MAX_ADC = 2 ** 16 -1
 MIN_ADC = 0
@@ -101,13 +94,10 @@ BROKER_IP = "192.168.4.253"
 
 
 
-        
-
 class Opt22_Display:
     def __init__(self, i2c, scl_pin, sda_pin, frequency, oled_w, oled_h):
         self.i2c = I2C(i2c, scl=scl_pin, sda=sda_pin, freq=frequency)
         self.display = SSD1306_I2C(oled_w, oled_h, self.i2c)
-#         self.current_flag = True
 
     def reset(self):
         self.display.fill(0)
@@ -135,7 +125,6 @@ class Opt22:
         self.selector = selector
         self.press = False
         self.data = data
-        # self.response = None
         self.error_flag = False
         self.connect_flag = False
         self.mqtt = mqtt
@@ -144,20 +133,16 @@ class Opt22:
         return self.current_flag
     
     
-    # def receive_data(self,data):
-    #     if data != None:
-    #         self.data = data
+
             
     def create_data(self):
         file_name = "result_21.json"
         data = util.read_file(file_name)        
         return data
             
-    # def create_response(self):
-    #     return self.response
+
     
     def on(self):
-        # file_name = "result_21.json"
         data_json = self.create_data()
         data_str = ujson.dumps(data_json)
         
@@ -177,29 +162,24 @@ class Opt22:
             self.mqtt.run()
             self.handle_press()
         
-        # if self.response != None:
-            # self.stop()
-        # if self.error_flag == True or self.mqtt.error_flag == True :
+
             if self.mqtt.error_flag == True :
                 self.stop()
             if self.mqtt.stop_flag == True:
                 self.stop()
         self.stop()
-        # else:
-        #     self.stop()
+
     def stop(self):
-        # if self.is_connected():
-        print("program stop automatically")
+
         self.press = True
             
             
     def handle_press(self):
         p22_fifo = self.encoder.p22_fifo
-        # print(p22_fifo.has_data())
+
         while p22_fifo.has_data():
             value = p22_fifo.get()
-            print(value)
-            print(f"program {self.name} press")
+
             if value == 1:
                 self.stop_flag == True
                 self.press = True
@@ -213,37 +193,3 @@ class Opt22:
         self.mqtt.stop_flag = True
         self.mqtt.data = None
         
-
-
-# data =   {
-#     "mean_ppi": "718.0", 
-#     "sdnn": "71.26",
-#     "rmssd": "105.08",
-#     "mean_hr": "84.0"
-#     }
-# json_data = ujson.dumps(data)
-# adc_pin_nr = 27
-# sample_size = 500 # want 250
-# test_sample_size = 500
-# sample_rate = 250
-# hz = 20
-# wait = round(1/hz,2)
-# 
-# samples = Isr_Fifo(sample_size,adc_pin_nr)
-#         
-# encoder = Encoder(ROT_A_PIN,ROT_B_PIN,ROT_SW_PIN)
-# # class Mqtt:
-# #     def __init__(self,topic, ssid, password):
-# 
-# mqtt = Mqtt("project",SSID,PASSWORD)
-#         
-# opt22_display = Opt22_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt22 = Opt22("22",opt22_display,encoder,mqtt)
-# opt22.receive_data(json_data)
-# 
-# print(opt22.data)
-# while True:
-#     opt22.on()
-    # mqtt.run()
-
-

@@ -344,9 +344,10 @@ class Opt_x1:
         self.press = True
             
     def check_error(self):
-        if self.is_error():
-            print("error")
-            self.found_error()
+        if self.name != "11": #new here
+            if self.is_error():
+                print("error")
+                self.found_error()
     
     def validate_ppi_count(self):
         if self.is_good_ppi_count():
@@ -371,7 +372,6 @@ class Opt_x1:
             self.sorf_reset_flag = True
         self.validate_hr(hr)
         self.validate_ppi_count()
-
 
         if self.soft_reset_flag == False and self.hard_reset_flag == False  and self.found_ppi_flag == True and self.error_flag == False:
             self.display_hr(ppi, hr)
@@ -399,14 +399,6 @@ class Opt_x1:
         if self.peak_count <= 8 and self.peak_flag == True:
             self.find_hr_v2()
             
-
-            
-        # if self.sample_count % 250 == 0:
-        #     self.display.update_time_str(self.time)
-        #   self.display.upda(self.hr, self.time)
-
-
-
         if self.sample_count >= self.sample_size:
             self.hard_reset_flag = True
         
@@ -431,7 +423,6 @@ class Opt_x1:
         self.time_count += 2 #+ two second
         
     def update_time(self):
-        # if self.sample_count >0:
         if self.sample_count % self.frequency == 0:
             self.time += 1
             
@@ -541,31 +532,33 @@ mean HR  = {self.mean_hr} BPM
 rmssd    = {self.rmssd}
 sdnn     = {self.sdnn}
 """)              
-        
+                          
     def press_encoder(self):
         p_fifo = self.encoder.p_x1_fifo        
         while p_fifo.has_data():
             option = p_fifo.get()
             if option == 1:
                 if self.name == "11":
-                    print(" 11 pressed")
-                    self.stop_flag = True
-                else:
+                    self.stop_flag = True             
+                else:   
                     if len(self.ppi_list) < 15 and self.time < 30:
                         print("pressed")
                         self.error_flag = True
                         self.stop_flag = True
-#                 self.stop_flag = True
-#                 pass
+                    if len(self.ppi_list) <15 and self.time > 30:
+                        print("pressed")
+                        self.error_flag = True
+                        self.stop_flag = True   
+
         
 
     def is_program_stop(self):
-#         if self.time == 30 or self.stop_flag == True:
-#         if self.stop_flag == True:
-#             return True
+
         if self.time >= 30 and len(self.ppi_list) >= 15:    
             return True
-        elif self.error_flag == True or self.stop_flag == True:
+        elif self.stop_flag == True:
+            return True
+        elif self.error_flag == True:
             return True
         else:
             return False
@@ -582,6 +575,7 @@ sdnn     = {self.sdnn}
             self.check_error()
             
             data = self.isr_fifo.get()
+            
             self.sample_count += 1
 #               print(data)
             if LOWER_LIM <= data and data <= MAX_ADC - LOWER_LIM:
@@ -603,7 +597,7 @@ sdnn     = {self.sdnn}
             self.press_encoder()    
             if self.is_program_stop():
                 self.stop()
-    
+                
     def send_ppi_list(self):
         if self.ppi_list != []:
             return self.ppi_list
@@ -628,7 +622,6 @@ sdnn     = {self.sdnn}
                 }
             util.write_file(file_name,measure)
 
-
                   
     def on(self):
         self.press = False
@@ -649,27 +642,28 @@ sdnn     = {self.sdnn}
     def stop(self):
         self.off()
         self.display_result()
-        print(f"program {self.name} stop")
         if self.name == "31" or self.name == "21":
             self.create_data()
         self.press = True
             
     def run(self):
-        print(f"program {self.name} run")
-        print("start reading")
-#         while True:
+
         self.default_value()
         self.display.show_result()
         while self.stop_flag != True:
             if self.display.update_flag == False:
                 if self.hard_reset_flag == True:
-                    self.hard_reset()
+                    self.reset()
                 else:
                     self.hr_program()
             else:
                 self.display.show_result()
+                
 
 
+
+
+# 
 class Opt_x1_Display:
     def __init__(self,i2c,scl_pin,sda_pin,frequency,oled_w,oled_h):
         self.i2c = I2C(i2c, scl=scl_pin, sda = sda_pin, freq = frequency)
@@ -679,7 +673,6 @@ class Opt_x1_Display:
         self.measure_str = "MEASURE.. "
         self.stop_flag = False
         self.update_flag = True
-        # self.update_flag = False
 
     def update_hr_str(self, hr):
         if self.update_flag == False:
@@ -711,7 +704,6 @@ class Opt_x1_Display:
         self.time_str = "t = 00s"
         self.stop_flag = False
         self.update_flag = True
-        # self.update_flag = False
             
 
         
@@ -726,29 +718,12 @@ class Opt_x1_Display:
             time_str_x = util.get_x_starting(self.time_str)
             hr_str_x = util.get_x_starting(self.hr_str)
             text_1_x = util.get_x_starting(self.measure_str)
-
+            
             self.reset()
             self.display.text(self.time_str, time_str_x,Y_ROW_2)
             self.display.text(self.hr_str, hr_str_x,Y_ROW_3)
             self.display.text(self.measure_str,text_1_x,Y_ROW_5)
-#             self.display.text(text_2,text_2_x,Y_ROW_6)
             self.update_flag = False
             self.display.show()
             
-# hz = 20
-# wait = round(1/hz,2)
-# 
-# adc_pin_nr = 27
-# sample_size = 500 # want 250
-# test_sample_size = 500
-# sample_rate = 250            
-# #             
-# encoder = Encoder(ROT_A_PIN,ROT_B_PIN,ROT_SW_PIN)
-# samples = Isr_Fifo(sample_size,adc_pin_nr)
-# timer = Piotimer(mode = Piotimer.PERIODIC, freq = sample_rate, callback = samples.handler) 
-#  
-# opt21_display = Opt_x1_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt21_mean_program = Opt_x1_Mean_Program(step)
-# opt21 = Opt_x1("21", opt21_display,opt21_mean_program, test_sample_size, sample_size,frequency, encoder,samples)
-# 
-# opt21.on()
+
