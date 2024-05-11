@@ -89,9 +89,9 @@ class Encoder:
             return self.p_x1_fifo
 #         elif name == "21":
 #             return self.p21_fifo
-        elif name == "210" or name == "310" or name == "220" or name == "320" or name == "4i":            
+        elif name == "210" or name == "310" or name == "220" or name == "320":            
             return self.p_xx0_fifo
-        elif name =="23" or name == "33":
+        elif name =="23" or name == "33" or name == "33d" or name == "4i":
             return self.p_x3_fifo
         elif name == "22":
             return self.p22_fifo
@@ -114,8 +114,9 @@ class Encoder:
                 
     def press_handler(self,pin):
         if self.cur_program != None:
+            print(self.cur_program.stop_flag)
             if self.cur_program.stop_flag == False:
-
+                print("is it here")
                 p_fifo = self.get_press_fifo_number()
                 name = self.cur_program.name
                 cur_time = time.ticks_ms()
@@ -127,6 +128,7 @@ class Encoder:
                     # elif name == "40":
                     #     pass
                     else:
+                        print("put 1 to fifo")
                         p_fifo.put(1)
                     self.prev_time = cur_time
                 

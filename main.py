@@ -27,7 +27,9 @@ from opt_x3 import Opt_x3, Opt_x3_Display
 from opt_xx0 import Opt_xx0, Opt_xx0_Display
 
 
-from opt00 import Program, Opt00_Display, Opt00_Selector,Opt00_Str, Opt00
+from opt00 import Program, Opt00_Display, Opt00_Selector, Opt00_Str, Opt00
+from opt40 import Opt40, Opt40_Display, Opt40_Selector
+from opt_4i import Opt4i, Opt_4i_Display
 
 import micropython
 micropython.alloc_emergency_exception_buf(200)
@@ -56,7 +58,12 @@ Y_ROW_2 = COLUMN_SPACE + LETTER_HEIGHT
 Y_ROW_3 = Y_ROW_2 + COLUMN_SPACE + LETTER_HEIGHT
 Y_ROW_4 = Y_ROW_3 + COLUMN_SPACE + LETTER_HEIGHT
 
-
+#const for led
+LED1_PIN = Pin(22)
+LED2_PIN = Pin(21)
+LED3_PIN = Pin(20)
+ON = 1 # for led, 1 is on, 0 is off
+OFF = 0
 
 
 
@@ -96,11 +103,11 @@ ROT_B_PIN = Pin(11)
 ROT_SW_PIN = Pin(12)
 BOUNCE_TIME = 200
 
-# Y_ROW_1 = 0
-# Y_ROW_2 = COLUMN_SPACE + LETTER_HEIGHT
-# Y_ROW_3 = Y_ROW_2 + COLUMN_SPACE + LETTER_HEIGHT
-# Y_ROW_4 = Y_ROW_3 + COLUMN_SPACE + LETTER_HEIGHT
-# Y_ROW_5 = Y_ROW_4 + COLUMN_SPACE + LETTER_HEIGHT
+Y_ROW_1 = 0
+Y_ROW_2 = COLUMN_SPACE + LETTER_HEIGHT
+Y_ROW_3 = Y_ROW_2 + COLUMN_SPACE + LETTER_HEIGHT
+Y_ROW_4 = Y_ROW_3 + COLUMN_SPACE + LETTER_HEIGHT
+Y_ROW_5 = Y_ROW_4 + COLUMN_SPACE + LETTER_HEIGHT
 
 
 #MQTT
@@ -122,7 +129,7 @@ ANALYSIS_URL = "https://analysis.kubioscloud.com/v2/analytics/analyze"
 
 
 class Main:
-    def __init__(self,delay, opt00, opt10, opt11,opt20, opt21, opt210, opt22, opt220, opt23, opt30, opt31, opt310,opt32, opt320, opt33, opt33d):
+    def __init__(self,delay, opt00, opt10, opt11,opt20, opt21, opt210, opt22, opt220, opt23, opt30, opt31, opt310,opt32, opt320, opt33, opt_40, encoder,  opt_4i_display):
 #         self.control_flag = None
         self.delay = delay
         self.opt00 = opt00
@@ -140,7 +147,10 @@ class Main:
         self.opt32 = opt32
         self.opt320 = opt320
         self.opt33 = opt33
-        self.opt33d = opt33d
+        self.opt_40 = opt_40
+        self.encoder = encoder
+        self.opt_4i_display = opt_4i_display
+        #self.opt4i = opt4i
 #         self.encoder = encoder
         self.state = self.state_00
         self.error_count_opt2 = 0
@@ -149,7 +159,10 @@ class Main:
     def execute(self):
         self.state()
         
-
+    def update_state_4i(self,program):
+        self.opt_4i = Opt4i("4i", self.opt_4i_display, encoder, program)
+        print("opt 4i", self.opt_4i)
+    
 
     def reset_to_state_00(self):
         print("reset go to state 00")
@@ -161,7 +174,7 @@ class Main:
         
     def state_00(self):
 #         print("here")
-        print("Free memory:", gc.mem_free(), "bytes")
+#         print("Free memory:", gc.mem_free(), "bytes")
         self.opt10.off()
         self.opt11.off()
         self.opt20.off()
@@ -176,10 +189,12 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
+        
         self.opt00.on()
         time.sleep(self.delay)
         if self.opt00.press:
+            self.opt00.press = False
             current_program = self.opt00.current_program
             if current_program.name == opt10.name:
                 print("to state 10")
@@ -190,6 +205,11 @@ class Main:
             elif current_program.name == opt30.name:
                 print("to state 30")
                 self.state =self.state_30
+            elif current_program.name == opt40.name:
+                print("to state 40")
+                self.state = self.state_40
+                
+            
         else:
             self.state = self.state_00
         
@@ -210,7 +230,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt10.on()
         time.sleep(self.delay)
         if self.opt10.press:
@@ -233,7 +253,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt11.on()
         time.sleep(self.delay)
         if self.opt11.press:
@@ -257,7 +277,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt20.on()
         time.sleep(self.delay)
         if self.opt20.press:
@@ -283,7 +303,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt21.on()
         time.sleep(self.delay)
         if self.opt21.press:
@@ -317,7 +337,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt210.on()
         time.sleep(self.delay)
         if self.opt210.press:
@@ -346,7 +366,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt22.on()
 
         time.sleep(self.delay)
@@ -378,7 +398,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt220.on()
 
         time.sleep(self.delay)
@@ -413,7 +433,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt23.on()
         time.sleep(self.delay)
         if self.opt23.press:
@@ -438,7 +458,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt30.on()
         time.sleep(self.delay)
         if self.opt30.press:
@@ -463,7 +483,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt31.on()
         
         time.sleep(self.delay)
@@ -498,7 +518,7 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt310.on()
         time.sleep(self.delay)
         if self.opt310.press:
@@ -512,7 +532,7 @@ class Main:
             self.state = self.state_310
             
     def state_32(self):
-        print("Free memory:", gc.mem_free(), "bytes")
+#         print("Free memory:", gc.mem_free(), "bytes")
         self.opt00.off()
         self.opt10.off()
         self.opt11.off()
@@ -526,8 +546,8 @@ class Main:
         self.opt31.off()
         self.opt310.off()
         self.opt320.off()
-        self.opt33d.off()
         self.opt33.off()
+#         self.opt40.off()
 
         self.opt32.on()
         
@@ -562,14 +582,14 @@ class Main:
         self.opt310.off()
         self.opt32.off()
         self.opt33.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt320.on()
 
         time.sleep(self.delay)
         if self.opt320.press:
             if self.error_count_opt3 >= 5:
 
-                self.state = self.state_33d
+                self.reset_to_state_00()
             else:
                 print("to state 32")
 #                 ppi_list = self.opt31.send_ppi_list()
@@ -594,7 +614,7 @@ class Main:
         self.opt310.off()
         self.opt32.off()
         self.opt320.off()
-        self.opt33d.off()
+#         self.opt40.off()
         self.opt33.on()
         
         time.sleep(self.delay)
@@ -603,9 +623,8 @@ class Main:
             self.state = self.state_00
         else:
             self.state = self.state_33
-
             
-    def state_33d(self):
+    def state_40(self):
         self.opt00.off()
         self.opt10.off()
         self.opt11.off()
@@ -621,15 +640,93 @@ class Main:
         self.opt32.off()
         self.opt320.off()
         self.opt33.off()
-        self.opt33d.on()
-        
+        self.opt_40.on()
+#         print("what about here")
+        self.opt_40.run()        
         time.sleep(self.delay)
-        if self.opt33d.press:
-            print("to state 00")
-            self.state = self.state_00
+        if self.opt_40.press:
+            self.opt_40.press = False
+            current_program = self.opt_40.current_program
+#             print("current program", current_program)
+            self.update_state_4i(current_program)
+            
+            if current_program["idx"] != len(self.opt_40.obj_list) -1:
+#                 print("to state 4i", current_program.name)
+                
+                self.state = self.state_4i
+                self.opt_40.reset()
+            # elif current_program.name == opt20.name:
+            #     print("to state 20")
+            #     self.state = self.state_20
+            # elif current_program.name == opt30.name:
+            else:
+                print('go back')
         else:
-            self.state = self.state_33d
+            self.state = self.state_40
 
+    def state_40(self):
+        self.opt_40.on()
+#         print("what about here")
+        self.opt_40.run()
+        if self.opt_40.press:
+            self.opt_40.press = False
+            current_program = self.opt_40.current_program
+#             print("current program", current_program)
+            self.update_state_4i(current_program)
+            
+            if current_program["idx"] != len(self.opt_40.obj_list) -1:
+#                 print("to state 4i", current_program.name)
+                
+                self.state = self.state_4i
+                self.opt_40.reset()
+            # elif current_program.name == opt20.name:
+            #     print("to state 20")
+            #     self.state = self.state_20
+            # elif current_program.name == opt30.name:
+            else:
+                print('go back')
+                self.state = self.state_00
+         #history detail
+        #opt4i = opt40.create_option >> OptI(program)
+    def state_4i(self):
+        self.opt_4i.on()
+#         self.opt_4i.display.update_program(self.opt_4i)
+#         self.opt_4i.encoder.update_program()
+        self.opt_4i.run() 
+        if self.opt_4i.press:
+            print("go back to history list")
+            self.state = self.state_40
+#             self.opt_4i.press = False
+        else:
+            self.state = self.state_4i
+            
+      #def state_4i(self):
+#         self.opt00.off()
+#         self.opt10.off()
+#         self.opt11.off()
+#         self.opt20.off()
+#         self.opt21.off()
+#         self.opt210.off()
+#         self.opt22.off()
+#         self.opt220.off()
+#         self.opt23.off()
+#         self.opt30.off()
+#         self.opt31.off()
+#         self.opt310.off()
+#         self.opt32.off()
+#         self.opt320.off()
+#         self.opt33.off()
+#         self.opt40.off()
+#         self.opt4i.on()
+#         if self.opt4i.press:
+#             print("to state 40")
+#             self.state = self.state40
+#         else:
+#             self.state = self.state_4i
+        
+
+        
+            
 text1 = '1.MEASURE HR'
 text2 = "2.HRV ANALYSIS"
 text3 = "3.KUBIOS"
@@ -643,6 +740,7 @@ y_starting4 = Y_ROW_4
 
 adc_pin_nr = 27
 sample_size = 500 # want 250
+sensor_fifo_size= 4000
 test_sample_size = 500
 sample_rate = 250
 hz = 20
@@ -653,10 +751,10 @@ wait = round(1/hz,2)
 program_1 = Program("MEASURE HR")
 program_2 = Program("Basic HRV Analysic")
 program_3 = Program("KUBIOS")
-# program_4 = Program("HISTORY")
+program_4 = Program("HISTORY")
 
 
-samples = Isr_Fifo(sample_size,adc_pin_nr)
+samples = Isr_Fifo(sensor_fifo_size,adc_pin_nr)
 timer = Piotimer(mode = Piotimer.PERIODIC, freq = sample_rate, callback = samples.handler)
 encoder = Encoder(ROT_A_PIN,ROT_B_PIN,ROT_SW_PIN)
 
@@ -691,26 +789,18 @@ opt210 = Opt_xx0("210",opt210_display,encoder)
 opt22_display = Opt22_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
 opt22 = Opt22("22",opt22_display,encoder, mqtt)
 
-# opt220_display = Opt220_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt220 = Opt220("220",opt220_display,encoder)
 
 opt220_display = Opt_xx0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
 opt220 = Opt_xx0("220",opt220_display,encoder)
 
 
-# opt23_display = Opt_x3_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt23 = Opt_x3("23",opt23_display,encoder)
 
 opt23_display = Opt_x3_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
 opt23 = Opt_x3("23",opt23_display,encoder)
 
-# opt30_display = Opt30_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-# opt30 = Opt30("30",opt30_display,encoder)
 
 opt30_display = Opt_x0_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
 opt30 = Opt_x0("30",opt30_display,encoder)
-
-
 
 opt31_display = Opt_x1_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
 opt31_mean_program = Opt_x1_Mean_Program(step)
@@ -728,37 +818,54 @@ opt320 = Opt_xx0("320",opt320_display,encoder)
 opt33_display = Opt_x3_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
 opt33 = Opt_x3("33",opt33_display,encoder, history_list)
 
-opt33_display = Opt_x3_Display(I2C_MODE, SCL_PIN, SDA_PIN, FREQ, OLED_WIDTH, OLED_HEIGHT)
-opt33d = Opt_x3("33d",opt33_display,encoder, history_list)
+opt40_display = Opt40_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt40_selector = Opt40_Selector(ROW_START,HEIGHT_START)
+opt40 = Opt40("40",opt40_display, encoder,samples, opt40_selector, history_list)
 
+opt4i_display = Opt_4i_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
+        
+opt40_display = Opt40_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
+opt40_selector = Opt40_Selector(ROW_START,HEIGHT_START)
+opt40 = Opt40("40",opt40_display, encoder, opt40_selector, history_list)
+# main = Main(wait, opt40, encoder,  opt4i_display)
 
 # menu_prog.add_program(hr_program)
 opt00.add_program(opt10)
 opt00.add_program(opt20)
 opt00.add_program(opt30)
 # opt00.add_program(program_4)
+opt00.add_program(opt40)
 
 # program_str_1 = Program_str(text1,x_starting,y_starting1, hr_program)
-Opt00_Str_1 = Opt00_Str(text1,x_starting,y_starting1, opt10)
-Opt00_Str_2 = Opt00_Str(text2,x_starting,y_starting2, opt20)
-Opt00_Str_3 = Opt00_Str(text3,x_starting,y_starting3, opt30)
-# Opt00_Str_4 = Opt00_Str(text4,x_starting,y_starting4, program_4)
+Opt00_str_1 = Opt00_Str(text1,x_starting,y_starting1, opt10)
+Opt00_str_2 = Opt00_Str(text2,x_starting,y_starting2, opt20)
+Opt00_str_3 = Opt00_Str(text3,x_starting,y_starting3, opt30)
+# Opt00_str_4 = Opt00_Str(text4,x_starting,y_starting4, program_4)
+Opt00_str_4 = Opt00_Str(text4,x_starting,y_starting4, opt40)
 
 # led_str3 = Led_str(text1_3,x_starting,y_starting3, led3)
 
-opt00_display.add_text(Opt00_Str_1)
-opt00_display.add_text(Opt00_Str_2)
-opt00_display.add_text(Opt00_Str_3)
-# opt00_display.add_text(Opt00_Str_4)
+opt00_display.add_text(Opt00_str_1)
+opt00_display.add_text(Opt00_str_2)
+opt00_display.add_text(Opt00_str_3)
+opt00_display.add_text(Opt00_str_4)
 
 
 
-main = Main(wait,opt00,opt10, opt11, opt20, opt21, opt210, opt22, opt220, opt23, opt30, opt31, opt310, opt32, opt320, opt33,opt33d)
+# menu_display = Menu_Display(I2C_MODE,SCL_PIN,SDA_PIN ,FREQ, OLED_WIDTH, OLED_HEIGHT)
 
+# opt10_encoder = Encoder(ROT_SW_PIN)
+
+
+# main = Main(wait,opt00,opt10, opt11, opt20, opt21, opt210, opt22, opt220, opt23, opt30, opt31, opt310, opt32, opt320, opt33)
+
+main = Main(wait,opt00,opt10, opt11, opt20, opt21, opt210, opt22, opt220, opt23, opt30, opt31, opt310, opt32, opt320, opt33, opt40 ,encoder,  opt4i_display)
+#add opt4i to main later
 
 while True:
     main.execute()
     gc.collect()
+#     opt20.on()
 
 
 
