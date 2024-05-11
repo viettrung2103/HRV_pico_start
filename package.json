@@ -9,6 +9,14 @@
       "http://localhost:8000/metro-lib/encoder.py"
     ],
     [
+      "lib/g_x_axis.py",
+      "http://localhost:8000/metro-lib/g_x_axis.py"
+    ],
+    [
+      "lib/g_y_axis.py",
+      "http://localhost:8000/metro-lib/g_y_axis.py"
+    ],
+    [
       "lib/history_list.py",
       "http://localhost:8000/metro-lib/history_list.py"
     ],
@@ -59,14 +67,6 @@
     [
       "lib/util.py",
       "http://localhost:8000/metro-lib/util.py"
-    ],
-    [
-      "lib/g_x_axis.py",
-      "http://localhost:8000/metro-lib/g_x_axis.py"
-    ],
-    [
-      "lib/g_y_axis.py",
-      "http://localhost:8000/metro-lib/g_y_axis.py"
     ],
     [
       "lib/filefifo.py",
